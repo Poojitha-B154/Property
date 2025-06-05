@@ -34,7 +34,7 @@ pipeline {
         }
         stage("build docker image") {
             steps {
-                sh 'docker build -t netflix .'
+                sh 'docker build -t property .'
             }
             post {
                 success {
@@ -50,8 +50,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker tag netflix ${DOCKERHUB_USERNAME}/netflix
-                    docker push ${DOCKERHUB_USERNAME}/netflix
+                    docker tag netflix ${DOCKERHUB_USERNAME}/property
+                    docker push ${DOCKERHUB_USERNAME}/property
                     """
                 }
             }
@@ -59,8 +59,8 @@ pipeline {
         stage("remove docker image locally") {
             steps {
                 sh """
-                docker rmi -f ${DOCKERHUB_USERNAME}/netflix || true
-                docker rmi -f netflix || true
+                docker rmi -f ${DOCKERHUB_USERNAME}/property || true
+                docker rmi -f property || true
                 """
             }
         }
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 sh """
                 docker rm -f app || true
-                docker run -it -d --name app -p 8081:8080 ${DOCKERHUB_USERNAME}/netflix
+                docker run -it -d --name app -p 8081:8080 ${DOCKERHUB_USERNAME}/property
                 """
             }
         }
